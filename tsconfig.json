@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"target": "es6", 
+		"module": "commonjs", 
+		"sourceMap": false, 
+		"outDir": "./build", 
+		"strict": true, 
+		"moduleResolution": "node", 
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"allowJs": true,
+		"typeRoots": ["utils"]
+	},
+	"include": [
+		"src"
+	]
+}

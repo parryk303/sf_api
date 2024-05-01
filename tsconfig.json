@@ -14,5 +14,14 @@
 	},
 	"include": [
 		"src"
-	]
+	],
+	"baseUrl": "./",
+	"paths": {
+        "@utils/*": ["src/server/utils/*"],
+        "@controllers/*":["src/server/controllers/*"],
+        "@services/*":["src/server/services/*"],
+        "@middlewares/*":["src/server/middlewares/*"],
+        "@models/*":["src/server/database/models/*"],
+        "@seed/*":["src/server/seed-data/*"]
+      }
 }

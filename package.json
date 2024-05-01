@@ -4,21 +4,40 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx tsc && cp -r src/public build/",
-    "start": "node build/index.js",
+    "start": "npm-run-all --parallel start:server",
+    "build:fe": "react-app-rewired build",
+    "start:fe": "react-app-rewired start",
+    "dev:watch-client": "watch 'npm run build:fe' src/client",
     "dev": "npm run build && concurrently \"npx tsc --watch\" \"nodemon -q build/index.js\"",
-    "fetch:schema": "bash fetch-schema.sh",
-    "codegen": "graphql-codegen",
-    "fetch:generate": "npm run fetch:schema && npm run codegen"
+    "build": "npm run build:fe && npx tsc && cp -r src/public build/ && npm run build:server",
+    "dev:build-server": "webpack --config webpack.server.js --mode=development -w",
+    "dev:start-server": "nodemon ./server-build/index.js",
+    "build:server": " webpack --config webpack.server.js --mode=production",
+    "start:server": "node --enable-source-maps ./server-build",
+    "server": "npm-run-all --parallel dev:build-server dev:start-server"
+  },
+  "@alias": {
+    "@common": "./src/shared",
+    "@client": "./src/client",
+    "@server": "./src/server",
+    "@utils": "./src/server/utils",
+    "@controllers": "./src/server/controllers",
+    "@services": "./src/server/services",
+    "@middlewares": "./src/server/middlewares",
+    "@models": "./src/server/database/models",
+    "@seed": "./src/server/seed-data"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-lambda": "^3.452.0",
     "@aws-sdk/client-sts": "^3.451.0",
+    "@emotion/react": "11.9.0",
+    "@emotion/styled": "11.8.1",
     "@mondaydotcomorg/api": "^2.0.0",
     "@mondaydotcomorg/setup-api": "^1.0.2",
+    "@mui/icons-material": "5.11.0",
+    "@mui/material": "5.11.0",
     "@ringcentral-pro-serv/psi-logging-system": "^1.0.5",
     "axios": "^1.6.8",
     "dotenv": "^16.3.1",
@@ -27,7 +46,12 @@
     "jsforce": "^1.11.1",
     "monday-sdk-js": "^0.5.5",
     "node-cache": "^5.1.2",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0",
+    "react-scripts": "^5.0.1",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@graphql-codegen/typescript": "^4.0.6",
@@ -38,6 +62,23 @@
     "@types/node-cron": "^3.0.11",
     "concurrently": "^8.2.2",
     "nodemon": "^3.0.1",
-    "typescript": "^5.2.2"
+    "npm-run-all": "^4.1.5",
+    "react-app-rewired": "^2.2.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^4.9.5",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

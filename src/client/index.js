@@ -8,10 +8,12 @@ import '@client/assets/fonts/fontface.css';
 import ReactDOM from 'react-dom/client';
 import MainModule from './modules';
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from './store';
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
       <AppContextProvider>
         <ToastContainer
           position="top-right"
@@ -35,7 +37,7 @@ function App() {
           }}
         </AppContextConsumer>
       </AppContextProvider>
-    </>
+    </Provider>
   );
 }
 

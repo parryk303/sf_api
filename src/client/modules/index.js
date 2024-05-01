@@ -3,7 +3,11 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { DefaultLayout } from '@client/shared/components';
 import { AppService } from '@client/shared/services';
 import { AppContext } from '@client/shared/contexts';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux'
+import { dispatchFetchAccounts, login } from '../reducers/reducer.js';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 const App = () => {
   // const { setAppData, appData } = useContext(AppContext);
@@ -44,7 +48,10 @@ const App = () => {
         userData={{}}
         version={{}}
         subHeaderList={subHeaderList || []}
-      ></DefaultLayout>
+      >
+        <Button onClick={login}>Login</Button>
+        <Button onClick={dispatchFetchAccounts}>Get Accounts</Button>
+      </DefaultLayout>
       <Box sx={{ mt: '40px' }}>
         {/* {appData.userData ? ( */}
         <Routes>

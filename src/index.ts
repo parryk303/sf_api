@@ -49,7 +49,7 @@ const oauth2 = new jsforce.OAuth2({
   // you can change loginUrl to connect to sandbox or prerelease env.
   loginUrl: 'https://ringcentral13-dev-ed.develop.my.salesforce.com',
   //clientId and Secret will be provided when you create a new connected app in your SF developer account
-  clientId : process.env.SF_KEY,
+  clientId: process.env.SF_KEY,
   clientSecret : process.env.SECRET,
   redirectUri: 'http://localhost:3000/token'
 });

@@ -4,15 +4,19 @@ import { Request, Response } from 'express';
 import * as Smartsheet from 'smartsheet';
 import csv from 'csvtojson';
 import dotenv from 'dotenv';
-
 import fs from 'fs';
 dotenv.config();
 
+const sheetId = Number(process.env.SMARTSHEET_SHEET_ID);
+const rowId = Number(process.env.SMARTSHEET_ROW_ID);
+
+
 export const smartsheet = async (req: Request, res: Response) => {
+
   // Authenticate with Smartsheet API
   const smartsheet = new Smartsheet.createClient({ accessToken: process.env.SMARTSHEET_KEY });
 
-  // Example: Get a list of sheets
+  // Get a list of sheets
   async function listSheets(): Promise<ListResult<Sheet>> {
     try {
       const response = await smartsheet.sheets.listSheets();
@@ -23,7 +27,7 @@ export const smartsheet = async (req: Request, res: Response) => {
     }
   }
 
-  // Example: Get a sheet by ID
+  // Get a sheet by ID
   async function getSheetById(sheetId: number) {
     var response: any = '';
     try {
@@ -35,7 +39,7 @@ export const smartsheet = async (req: Request, res: Response) => {
     return response;
   }
 
-  // Example: Get rows from a sheet
+  // Get rows from a sheet
   async function getSheetRows(sheetId: number, rowId: number): Promise<Array<Row>> {
     const result = smartsheet.sheets.getRow({ sheetId, rowId })
       .then(function (row: any) {
@@ -47,8 +51,8 @@ export const smartsheet = async (req: Request, res: Response) => {
     return result;
   }
 
-  // Example: Get rows from a sheet
-  async function getSheetAsFile(sheetId: number) {
+  // Get rows from a sheet as JSON
+  async function getSheetAsJSON(sheetId: number) {
     const result: { json: any, csv: string } = { json: '', csv: '' };
     await smartsheet.sheets.getSheetAsCSV({
       id: sheetId,
@@ -65,7 +69,7 @@ export const smartsheet = async (req: Request, res: Response) => {
       await csv({
         noheader: false,
         output: "json"
-      }).fromString(responseMessage.csv).then((response: any) => {
+      }).fromString(result.csv).then((response: any) => {
         result.json = response;
       })
     };
@@ -74,32 +78,22 @@ export const smartsheet = async (req: Request, res: Response) => {
   }
 
   // const responseMessage = await listSheets();
-  // const responseMessage = await getSheetById(2888478287155076);
-  // const responseMessage = await getSheetRows(2888478287155076, 6134730668068740);
-  const responseMessage = await getSheetAsFile(2888478287155076);
+  // const responseMessage = await getSheetById(sheetId);
+  // const responseMessage = await getSheetRows(sheetId, rowId);
+  const responseMessage = await getSheetAsJSON(sheetId);
 
   // Write to CSV file
-  if (responseMessage) {
-    // const lines = responseMessage?.csv.split("\n");
-    // const writeStream = fs.createWriteStream('output.csv');
-    // lines.forEach(line => {
-    //   // Split each line into fields
-    //   const fields = line.split(",");
-    //   // Write the fields to the CSV file
-    //   writeStream.write(fields.join(",") + '\n');
-    // });
-
-    // writeStream.end();
-    try {
-      responseMessage.json = await csv({
-        noheader: false,
-        output: "json"
-      }).fromString(responseMessage.csv)
-    } catch (error) {
-      console.log('Error:', error);
-    }
-  }
-
-
+  // if (responseMessage) {
+  //   const lines = responseMessage?.csv.split("\n");
+  //   const writeStream = fs.createWriteStream('output.csv');
+  //   lines.forEach(line => {
+  //     // Split each line into fields
+  //     const fields = line.split(",");
+  //     // Write the fields to the CSV file
+  //     writeStream.write(fields.join(",") + '\n');
+  //   });
+  //   writeStream.end();
+  // }
+  console.log(`🔵[smartsheet]: getSheetAsJSON()`);
   res.status(200).json({ message: responseMessage });
 };

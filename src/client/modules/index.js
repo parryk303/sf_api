@@ -1,13 +1,14 @@
 import { useCallback, useContext, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { DefaultLayout } from '@client/shared/components';
-import { AppService } from '@client/shared/services';
-import { AppContext } from '@client/shared/contexts';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux'
-import { dispatchFetchAccounts, login } from '../reducers/reducer.js';
+import { Grid } from '@client/shared/components';
+// import { AppService } from '@client/shared/services';
+// import { AppContext } from '@client/shared/contexts';
+import Monday from './monday';
+import SmartSheet from './smartsheet';
+import AccessDenied from './access-denied';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Typography, Tooltip } from '@mui/material';
 
 const App = () => {
   // const { setAppData, appData } = useContext(AppContext);
@@ -38,8 +39,62 @@ const App = () => {
   //   // });
   // }, [fetchUserData, fetchVersion]);
 
+  const state = {
+    entries: [
+      { name: 'A', description: 'test' },
+      { name: 'B', description: 'test' },
+      { name: 'C', description: 'test' },
+
+
+    ]
+  }
+
   const subHeaderList = [
-    { label: 'Login', to: '/auth/login', isDisabled: false }
+    { label: 'Login', to: '/auth/login', isDisabled: false },
+    { label: 'Monday', to: '/Monday', isDisabled: false },
+    { label: 'SmartSheet', to: '/SmartSheet', isDisabled: false },
+  ];
+
+  let columnConfig = [
+    {
+      id: "name",
+      label: "Connectivity Type",
+      canSort: true,
+      field: "name",
+      render: (row) => {
+        const accountId = row.rcAccountId ? `(${row.rcAccountId})` : "";
+        return (
+          <Tooltip
+            title={row.name + "  " + accountId}
+            placement="left"
+            arrow
+          >
+            <Typography
+              variant="body2"
+              sx={{ fontFamily: "inter_semibold", cursor: "pointer" }}
+            >
+              {row.name + "  " + accountId}
+            </Typography>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      id: "description",
+      label: "Description",
+      canSort: true,
+      field: "description",
+      render: (row) => (
+        // <Tooltip title={row.description} placement="top-start">
+        <Typography
+          variant="body2"
+          sx={{ fontFamily: "inter_semibold", cursor: "pointer" }}
+        >
+          {row.description}
+        </Typography>
+        // </Tooltip>
+      ),
+    }
   ];
 
   return (
@@ -49,15 +104,22 @@ const App = () => {
         version={{}}
         subHeaderList={subHeaderList || []}
       >
-        <Button onClick={login}>Login</Button>
-        <Button onClick={dispatchFetchAccounts}>Get Accounts</Button>
       </DefaultLayout>
       <Box sx={{ mt: '40px' }}>
+        <Typography>Test</Typography>
+        <Grid
+          columns={columnConfig}
+          rows={state.entries}
+          hasSelection={false}
+          hasPagination={false}
+        />
         {/* {appData.userData ? ( */}
         <Routes>
-         
+
           <Route path='/' element={<Navigate to='/' />} />
-         
+          <Route path='/Monday' element={<Monday />} />
+          <Route path='/SmartSheet' element={<SmartSheet />} />
+
         </Routes>
         {/* )  : (
           <div>Loading...</div>

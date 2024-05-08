@@ -7,19 +7,18 @@ dotenv.config();
 const redirect_uri = String('http://localhost:3000/oauth');
 
 export const oauth2 = async (req: Request, res: Response) => {
-  const { access_token } = req.query; // Retrieve access token from query parameters
-  const { state } = req.query;
-
+  const { code, state } = req.query; // Retrieve access token from query parameters
+  
   // Set state to redirect_uri if it is not present in req.query
   let newState = state || redirect_uri;
 
   // Use console.log for debugging purposes
   console.log('original url:', req.originalUrl);
-  console.log('Access Token:', access_token);
+  console.log('Code:', code);
   console.log('State:', newState);
 
   try {
-    if (access_token) {
+    if (code) {
       res.redirect('health');
     } else {
       res.redirect(`https://login.salesforce.com/services/oauth2/authorize?response_type=token&client_id=${process.env.SF_KEY}&redirect_uri=${redirect_uri}&state=${newState}`);
